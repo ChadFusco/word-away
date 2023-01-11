@@ -1,12 +1,24 @@
 import React from 'react';
 import '../styles/Tile.css';
 
-export default function App(): JSX.Element {
+interface Props {
+  letterID: number
+  updateGuess: Function
+}
+
+function Tile({ letterID, updateGuess }: Props): JSX.Element {
   return (
-    <div className="App">
-      <div className="App-header">
-        <h2>A Word Away...</h2>
-      </div>
-    </div>
+    <h3>
+      <input
+        className="tile"
+        type="text"
+        size={1}
+        maxLength={1}
+        onChange={(e) => updateGuess(letterID, e.target.value)}
+        required
+      />
+    </h3>
   );
 }
+
+export default Tile;

@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: antiquewhite;
 }
 
 code {
@@ -13,5 +14,5 @@ code {
 }
 
 h2 {
-  color: lightyellow;
+  color: antiquewhite;
 }
