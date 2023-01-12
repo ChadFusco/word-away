@@ -16,6 +16,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "mongoose": "^6.8.3",
     "morgan": "^1.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -29,10 +30,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prod": "nodemon server/index.ts",
-    "build-server": "npx tsc server/src",
-    "server": "node server/dist/index.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q server/dist/index.js\""
+    "server": "nodemon server/index.js"
   },
   "eslintConfig": {
     "extends": [
