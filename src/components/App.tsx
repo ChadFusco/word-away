@@ -24,37 +24,45 @@ export default function App(): JSX.Element {
 
   // COMPONENT STATES
   const [guesses, setGuesses] = useState<GuessesT>(initialGuesses);
-  const [curAnswerID, setCurAnswerID] = useState<number>(1);
-  const [answer, setAnswer] = useState<string[]>(answers[1].answer.toUpperCase().split(''));
-  const [synonym, setSynonym] = useState<string>(answers[1].synonym);
+  const [curAnswerID, setCurAnswerID] = useState<number>(0);
+  const [answer, setAnswer] = useState<string[]>(answers[0].answer.toUpperCase().split(''));
+  const [synonym, setSynonym] = useState<string>(answers[0].synonym);
 
-  const getNewAnswer = (answerID: number) => {
-    setAnswer(answers[answerID - 1].answer.toUpperCase().split(''));
-    setSynonym(answers[answerID - 1].synonym);
-    setCurAnswerID(answerID);
-  };
+  function timeout(delay: number) {
+    return new Promise((res) => { setTimeout(res, delay) });
+  }
 
   const clearBoard = () => {
+    console.log('initialGuesses:', initialGuesses);
     setGuesses(initialGuesses);
   };
 
-  const checkAnswer = (submittedGuess: GuessT) => {
+  const getNewAnswer = (answerID: number) => {
+    setAnswer(answers[answerID + 1].answer.toUpperCase().split(''));
+    setSynonym(answers[answerID + 1].synonym);
+    setCurAnswerID(answerID);
+  };
+
+  const checkAnswer = async (submittedGuess: GuessT) => {
     const newMatchedArr: number[] = submittedGuess.guessWord.map((char: string, i: number) => {
       if (answer.indexOf(char) === -1) {
         return 0;
       }
       return (char === answer[i] ? 2 : 1);
     });
-    if (newMatchedArr.reduce((acc, num) => acc + num) === 12) {
-      clearBoard();
-      getNewAnswer(curAnswerID);
-    }
 
     const newGuess = { ...submittedGuess, guessed: true, matched: newMatchedArr };
 
     setGuesses((prevGuesses: GuessesT) => prevGuesses.map((guessItem: GuessT) => (
       guessItem.guessID === newGuess.guessID ? newGuess : guessItem
     )));
+
+    console.log('App.tsx: newMatchedArr:', newMatchedArr);
+    if (newMatchedArr.reduce((acc, num) => acc + num) === 12) {
+      getNewAnswer(curAnswerID);
+      await timeout(1000);
+      clearBoard();
+    }
   };
 
   // const getNewAnswer = (answerID: number) => {
