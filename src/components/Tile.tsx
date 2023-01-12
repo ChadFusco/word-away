@@ -31,6 +31,10 @@ function Tile({ letterID, updateGuess, match }: Props): JSX.Element {
     });
   }, [match]);
 
+  // useEffect(() => {
+  //   fds
+  // }, [answer])
+
   return (
     <h3>
       <input

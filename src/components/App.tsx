@@ -1,35 +1,42 @@
-import React, { useState, ReactElement, useEffect } from 'react';
+import React, { useState, ReactElement, createContext } from 'react';
 import '../styles/App.css';
 import Guess from './Guess';
-import requests from '../requests';
-import answers from '../answers';
-import type { GuessesT, GuessT, AnswerT } from '../dataStructure';
+// import requests from '../requests';
+import answers from '../data';
+import type { GuessesT, GuessT } from '../dataStructure';
+
+// const AnswerContext = createContext();
 
 export default function App(): JSX.Element {
   // initialize "guesses" state on page load
   const initialStrArr: string[] = ['', '', '', '', '', ''];
   const initialNumArr: number[] = [0, 0, 0, 0, 0, 0];
-  const initialGuesses: GuessesT = [{
+  const initialGuess: GuessT = {
     guessID: 0,
     guessWord: initialStrArr,
     guessed: false,
     matched: initialNumArr,
-  }];
+  };
+  const initialGuesses: GuessesT = [initialGuess];
   for (let i = 1; i < 5; i += 1) {
-    initialGuesses.push({
-      guessID: i,
-      guessWord: initialStrArr,
-      guessed: false,
-      matched: initialNumArr,
-    });
+    initialGuesses.push({ ...initialGuess, guessID: i });
   }
 
   // COMPONENT STATES
   const [guesses, setGuesses] = useState<GuessesT>(initialGuesses);
-  // const [answer] = useState<string[]>(('BINARY').split(''));
   const [curAnswerID, setCurAnswerID] = useState<number>(1);
   const [answer, setAnswer] = useState<string[]>(answers[1].answer.toUpperCase().split(''));
   const [synonym, setSynonym] = useState<string>(answers[1].synonym);
+
+  const getNewAnswer = (answerID: number) => {
+    setAnswer(answers[answerID - 1].answer.toUpperCase().split(''));
+    setSynonym(answers[answerID - 1].synonym);
+    setCurAnswerID(answerID);
+  };
+
+  const clearBoard = () => {
+    setGuesses(initialGuesses);
+  };
 
   const checkAnswer = (submittedGuess: GuessT) => {
     const newMatchedArr: number[] = submittedGuess.guessWord.map((char: string, i: number) => {
@@ -38,6 +45,10 @@ export default function App(): JSX.Element {
       }
       return (char === answer[i] ? 2 : 1);
     });
+    if (newMatchedArr.reduce((acc, num) => acc + num) === 12) {
+      clearBoard();
+      getNewAnswer(curAnswerID);
+    }
 
     const newGuess = { ...submittedGuess, guessed: true, matched: newMatchedArr };
 
@@ -53,14 +64,6 @@ export default function App(): JSX.Element {
   //   });
   //   setCurAnswerID(answerID);
   // };
-
-  const getNewAnswer = (answerID: number) => {
-    requests.getAnswer(answerID, (answerObj: AnswerT) => {
-      setAnswer(answerObj.answer.toUpperCase().split(''));
-      setSynonym(answerObj.synonym);
-    });
-    setCurAnswerID(answerID);
-  };
 
   // useEffect(() => {
   //   getNewAnswer(1);

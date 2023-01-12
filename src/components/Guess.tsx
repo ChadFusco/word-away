@@ -10,9 +10,6 @@ type Props = {
 };
 
 function Guess({ guess, setGuesses, checkAnswer }: Props): JSX.Element {
-  const guessID: number = 0;
-  const letterIDs: number[] = [0, 1, 2, 3, 4, 5];
-
   const updateGuess = (id: number, value: string): void => {
     const newGuessWord = guess.guessWord.map((char: string, i: number) => (
       i === id ? value : char
@@ -30,14 +27,14 @@ function Guess({ guess, setGuesses, checkAnswer }: Props): JSX.Element {
 
   return (
     <form className="guess">
-      {letterIDs.map((letterID: number): ReactElement => {
-        const tileID = `letter${guessID}-${letterID}`;
+      {guess.guessWord.map((letter: string, i: number): ReactElement => {
+        const tileID = `letter${guess.guessID}-${i}`;
         return (
           <Tile
             key={`${tileID}ID`}
-            letterID={letterID}
+            letterID={i}
             updateGuess={updateGuess}
-            match={guess.matched[letterID]}
+            match={guess.matched[i]}
           />
         );
       })}
