@@ -10,3 +10,9 @@ export type GuessesT = GuessT[];
 export type TileStyleT = {
   backgroundColor: string,
 };
+
+export type AnswerT = {
+  answerID: number,
+  answer: string,
+  synonym: string,
+};
