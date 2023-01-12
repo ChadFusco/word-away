@@ -14,7 +14,14 @@ const app = express();
 
 // APP-WIDE MIDDLEWARE
 app.use(morgan('dev'));
-app.use(cors());
+
+const corsOptions = {
+  origin: '*',
+  credentials: true,
+  optionSuccessStatus: 200,
+}
+
+app.use(cors(corsOptions));
 app.use(express.json());
 // Adds `req.session_id` based on the incoming cookie value.
 // Generates a new session if one does not exist.
@@ -27,16 +34,6 @@ app.use(express.static(path.join(__dirname, '../build')));
 app.use(favicon(path.join(__dirname, '../build/favicon.ico')));
 
 // ROUTES
-app.get('/answers', (req, res) => {
-  Answers.find({}, (err, results) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.status(200).send(results);
-    }
-  })
-})
-
 app.get('/answers/:answerID', (req, res) => {
   const answerID = req.params.answerID;
   Answers.findOne({ answerID: answerID }, (err, results) => {

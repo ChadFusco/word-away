@@ -24,6 +24,7 @@
   justify-content: flex-start;
   font-size: calc(10px + 2vmin);
   color: white;
+  letter-spacing: 1px;
 }
 
 /* @keyframes App-logo-spin {
@@ -34,3 +35,12 @@
     transform: rotate(360deg);
   }
 } */
+
+.synonym {
+  font-style: italic;
+  letter-spacing: 4px;
+}
+
+.synonymHeader {
+  letter-spacing: 1px;
+}

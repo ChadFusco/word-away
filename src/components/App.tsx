@@ -2,6 +2,7 @@ import React, { useState, ReactElement, useEffect } from 'react';
 import '../styles/App.css';
 import Guess from './Guess';
 import requests from '../requests';
+import answers from '../answers';
 import type { GuessesT, GuessT, AnswerT } from '../dataStructure';
 
 export default function App(): JSX.Element {
@@ -27,11 +28,8 @@ export default function App(): JSX.Element {
   const [guesses, setGuesses] = useState<GuessesT>(initialGuesses);
   // const [answer] = useState<string[]>(('BINARY').split(''));
   const [curAnswerID, setCurAnswerID] = useState<number>(1);
-  const [answer, setAnswer] = useState<string[]>(initialStrArr);
-  const [synonym, setSynonym] = useState<string>('');
-
-  console.log('curAnswerID:', curAnswerID);
-  console.log('synonym:', synonym);
+  const [answer, setAnswer] = useState<string[]>(answers[1].answer.toUpperCase().split(''));
+  const [synonym, setSynonym] = useState<string>(answers[1].synonym);
 
   const checkAnswer = (submittedGuess: GuessT) => {
     const newMatchedArr: number[] = submittedGuess.guessWord.map((char: string, i: number) => {
@@ -48,17 +46,25 @@ export default function App(): JSX.Element {
     )));
   };
 
-  const getNewAnswer = (id: number) => {
-    requests.getAnswer(id, (answerObj: AnswerT) => {
-      setAnswer(answerObj.answer.split(''));
+  // const getNewAnswer = (answerID: number) => {
+  //   requests.getAnswer(answerID, (answerObj: AnswerT) => {
+  //     setAnswer(answerObj.answer.split(''));
+  //     setSynonym(answerObj.synonym);
+  //   });
+  //   setCurAnswerID(answerID);
+  // };
+
+  const getNewAnswer = (answerID: number) => {
+    requests.getAnswer(answerID, (answerObj: AnswerT) => {
+      setAnswer(answerObj.answer.toUpperCase().split(''));
       setSynonym(answerObj.synonym);
     });
-    setCurAnswerID(id);
+    setCurAnswerID(answerID);
   };
 
-  useEffect(() => {
-    getNewAnswer(1);
-  }, []);
+  // useEffect(() => {
+  //   getNewAnswer(1);
+  // }, []);
 
   // console.log(guesses);
 
@@ -67,6 +73,10 @@ export default function App(): JSX.Element {
       <div className="app-header">
         <h2>A Word Away...</h2>
       </div>
+      <h3 className="synonymHeader">
+        Similiar to...&nbsp;&nbsp;
+        <span className="synonym">{synonym}</span>
+      </h3>
       {guesses.map((guess: GuessT): ReactElement => (
         <Guess
           key={`Guess${guess.guessID}`}

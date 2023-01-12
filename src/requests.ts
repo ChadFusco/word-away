@@ -4,11 +4,9 @@ const url = 'http://localhost:3200/';
 
 const requests = {
   // pass in (callback)
-  getAnswer: (id: number, callback: Function) => {
-    console.log('id:', id);
-    axios.get(`${url}answer/${id}`)
+  getAnswer: (answerID: number, callback: Function) => {
+    axios.get(`${url}answer/${answerID}`)
       .then((res: AxiosResponse<any, any>) => {
-        console.log('res:', res);
         const data = {
           answerID: res.data.answerID,
           answer: res.data.answer,
