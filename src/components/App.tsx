@@ -26,7 +26,7 @@ export default function App(): JSX.Element {
   const [guesses, setGuesses] = useState<GuessesT>(initialGuesses);
   const [answer] = useState<string[]>(('BINARY'.split('')));
 
-  function checkAnswer(submittedGuess: GuessT) {
+  const checkAnswer = (submittedGuess: GuessT) => {
     const newMatchedArr: number[] = submittedGuess.guessWord.map((char: string, i: number) => {
       if (answer.indexOf(char) === -1) {
         return 0;
@@ -39,7 +39,7 @@ export default function App(): JSX.Element {
     setGuesses((prevGuesses: GuessesT) => prevGuesses.map((guessItem: GuessT) => (
       guessItem.guessID === newGuess.guessID ? newGuess : guessItem
     )));
-  }
+  };
 
   // console.log(guesses);
 
