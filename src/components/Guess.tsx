@@ -1,19 +1,25 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement } from 'react';
 import '../styles/Guess.css';
 import Tile from './Tile';
+import type { GuessesT, GuessT } from '../dataStructure';
 
-interface Props {
-  guessID: number
-}
+type Props = {
+  setGuesses: Function,
+  guess: GuessT
+};
 
-function Guess(): JSX.Element {
+function Guess({ guess, setGuesses }: Props): JSX.Element {
   const guessID: number = 0;
   const letterIDs: number[] = [0, 1, 2, 3, 4, 5];
 
-  const [guess, setGuess] = useState<string[]>(['', '', '', '', '', '']);
-
   const updateGuess = (id: number, value: string): void => {
-    setGuess((prevGuess) => (prevGuess.map((char, i) => (i === id ? value : char))));
+    const newGuessWord = guess.guessWord.map((char, i) => (
+      i === id ? value : char
+    ));
+    const newGuess = { ...guess, guessWord: newGuessWord };
+    setGuesses((prevGuesses: GuessesT) => prevGuesses.map((guessItem: GuessT) => (
+      guessItem.guessID === newGuess.guessID ? newGuess : guessItem
+    )));
   };
 
   return (

@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../styles/Tile.css';
 
-interface Props {
-  letterID: number
+type Props = {
+  letterID: number,
   updateGuess: Function
-}
+};
 
 function Tile({ letterID, updateGuess }: Props): JSX.Element {
+  // COMPONENT STATES
+  const [letter, setLetter] = useState<string>('');
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setLetter(e.target.value.toUpperCase());
+    updateGuess(letterID, e.target.value);
+  }
+
   return (
     <h3>
       <input
@@ -14,8 +22,8 @@ function Tile({ letterID, updateGuess }: Props): JSX.Element {
         type="text"
         size={1}
         maxLength={1}
-        onChange={(e) => updateGuess(letterID, e.target.value)}
-        required
+        value={letter}
+        onChange={handleChange}
       />
     </h3>
   );
