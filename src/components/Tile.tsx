@@ -12,7 +12,7 @@ function Tile({ letterID, updateGuess }: Props): JSX.Element {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setLetter(e.target.value.toUpperCase());
-    updateGuess(letterID, e.target.value);
+    updateGuess(letterID, e.target.value.toUpperCase());
   }
 
   return (

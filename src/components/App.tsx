@@ -4,23 +4,42 @@ import Guess from './Guess';
 import type { GuessesT, GuessT } from '../dataStructure';
 
 export default function App(): JSX.Element {
-  const initialGuessStr: string[] = ['', '', '', '', '', ''];
+  // initialize "guesses" state on page load
+  const initialGuessArr: string[] = ['', '', '', '', '', ''];
+  const initialMatchedArr: number[] = [0, 0, 0, 0, 0, 0];
   const initialGuesses: GuessesT = [{
     guessID: 0,
-    guessWord: initialGuessStr,
+    guessWord: initialGuessArr,
     guessed: false,
+    matched: initialMatchedArr,
   }];
   for (let i = 1; i < 5; i += 1) {
     initialGuesses.push({
       guessID: i,
-      guessWord: initialGuessStr,
+      guessWord: initialGuessArr,
       guessed: false,
+      matched: initialMatchedArr,
     });
   }
 
   // COMPONENT STATES
   const [guesses, setGuesses] = useState<GuessesT>(initialGuesses);
-  const [answer, setAnswer] = useState<string[]>(('BINARY'.split('')));
+  const [answer] = useState<string[]>(('BINARY'.split('')));
+
+  function checkAnswer(submittedGuess: GuessT) {
+    const newMatchedArr: number[] = submittedGuess.guessWord.map((char: string, i: number) => {
+      if (answer.indexOf(char) === -1) {
+        return 0;
+      }
+      return (char === answer[i] ? 2 : 1);
+    });
+
+    const newGuess = { ...submittedGuess, guessed: true, matched: newMatchedArr };
+
+    setGuesses((prevGuesses: GuessesT) => prevGuesses.map((guessItem: GuessT) => (
+      guessItem.guessID === newGuess.guessID ? newGuess : guessItem
+    )));
+  }
 
   // console.log(guesses);
 
@@ -34,6 +53,7 @@ export default function App(): JSX.Element {
           key={`Guess${guess.guessID}`}
           guess={guess}
           setGuesses={setGuesses}
+          checkAnswer={checkAnswer}
         />
       ))}
     </div>

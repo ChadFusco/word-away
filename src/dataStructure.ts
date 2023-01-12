@@ -1,7 +1,8 @@
 export type GuessT = {
   guessID: number,
   guessWord: string[],
-  guessed: boolean
+  guessed: boolean,
+  matched: number[],
 };
 
 export type GuessesT = GuessT[];
