@@ -22,6 +22,7 @@ function Guess({ guess, setGuesses, checkAnswer }: Props): JSX.Element {
       guessItem.guessID === newGuess.guessID ? newGuess : guessItem
     )));
 
+    // Only check the answer (and update tile colors) if all letters are entered
     if (newGuessWord.join('').length === 6) {
       checkAnswer(newGuess);
     }
@@ -36,6 +37,7 @@ function Guess({ guess, setGuesses, checkAnswer }: Props): JSX.Element {
             key={`${tileID}ID`}
             letterID={letterID}
             updateGuess={updateGuess}
+            match={guess.matched[letterID]}
           />
         );
       })}

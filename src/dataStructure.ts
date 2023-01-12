@@ -6,3 +6,7 @@ export type GuessT = {
 };
 
 export type GuessesT = GuessT[];
+
+export type TileStyleT = {
+  backgroundColor: string,
+};
