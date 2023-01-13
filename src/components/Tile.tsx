@@ -6,14 +6,14 @@ type Props = {
   letterID: number,
   letter: string,
   updateGuess: Function,
-  match: number
+  match: number,
+  correct: boolean
 };
 
 function Tile({
-  letterID, letter, updateGuess, match,
+  letterID, letter, updateGuess, match, correct,
 }: Props): JSX.Element {
   // COMPONENT STATES
-  // const [letter, setLetter] = useState<string>('');
   const [tileStyle, setTileStyle] = useState<TileStyleT>({ backgroundColor: 'white' });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -22,7 +22,7 @@ function Tile({
   }
 
   useEffect(() => {
-    console.log('useEffect inside Tile fired! match:', match);
+    // console.log('useEffect inside Tile fired! match:', match);
     const color: string = (() => {
       switch (match) {
         case 1: return 'yellow';
@@ -35,14 +35,10 @@ function Tile({
     });
   }, [match]);
 
-  // useEffect(() => {
-  //   fds
-  // }, [answer])
-
   return (
     <h3>
       <input
-        className="tile"
+        className={correct ? 'tileSpin' : 'tile'}
         type="text"
         size={1}
         maxLength={1}

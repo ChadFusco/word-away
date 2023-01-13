@@ -1,11 +1,10 @@
-import React, { useState, ReactElement, createContext } from 'react';
+import React, { useState, ReactElement } from 'react';
 import '../styles/App.css';
 import Guess from './Guess';
+import Clue from './Clue';
 // import requests from '../requests';
 import answers from '../data';
 import type { GuessesT, GuessT } from '../dataStructure';
-
-// const AnswerContext = createContext();
 
 export default function App(): JSX.Element {
   // initialize "guesses" state on page load
@@ -15,6 +14,7 @@ export default function App(): JSX.Element {
     guessID: 0,
     guessWord: initialStrArr,
     guessed: false,
+    correct: false,
     matched: initialNumArr,
   };
   const initialGuesses: GuessesT = [initialGuess];
@@ -23,24 +23,24 @@ export default function App(): JSX.Element {
   }
 
   // COMPONENT STATES
+  const [isCorrect, setIsCorrect] = useState<boolean>(false);
   const [guesses, setGuesses] = useState<GuessesT>(initialGuesses);
   const [curAnswerID, setCurAnswerID] = useState<number>(0);
   const [answer, setAnswer] = useState<string[]>(answers[0].answer.toUpperCase().split(''));
   const [synonym, setSynonym] = useState<string>(answers[0].synonym);
 
   function timeout(delay: number) {
-    return new Promise((res) => { setTimeout(res, delay) });
+    return new Promise((res) => { setTimeout(res, delay); });
   }
 
   const clearBoard = () => {
-    console.log('initialGuesses:', initialGuesses);
     setGuesses(initialGuesses);
   };
 
   const getNewAnswer = (answerID: number) => {
     setAnswer(answers[answerID + 1].answer.toUpperCase().split(''));
     setSynonym(answers[answerID + 1].synonym);
-    setCurAnswerID(answerID);
+    setCurAnswerID(answerID + 1);
   };
 
   const checkAnswer = async (submittedGuess: GuessT) => {
@@ -51,17 +51,22 @@ export default function App(): JSX.Element {
       return (char === answer[i] ? 2 : 1);
     });
 
-    const newGuess = { ...submittedGuess, guessed: true, matched: newMatchedArr };
+    const isCorrectGuess: boolean = newMatchedArr.reduce((acc, num) => acc + num) === 12;
+    setIsCorrect(isCorrectGuess);
+
+    const newGuess = {
+      ...submittedGuess, guessed: true, correct: isCorrectGuess, matched: newMatchedArr,
+    };
 
     setGuesses((prevGuesses: GuessesT) => prevGuesses.map((guessItem: GuessT) => (
       guessItem.guessID === newGuess.guessID ? newGuess : guessItem
     )));
 
-    console.log('App.tsx: newMatchedArr:', newMatchedArr);
-    if (newMatchedArr.reduce((acc, num) => acc + num) === 12) {
+    if (isCorrectGuess) {
+      await timeout(2500);
       getNewAnswer(curAnswerID);
-      await timeout(1000);
       clearBoard();
+      setIsCorrect(false);
     }
   };
 
@@ -84,10 +89,7 @@ export default function App(): JSX.Element {
       <div className="app-header">
         <h2>A Word Away...</h2>
       </div>
-      <h3 className="synonymHeader">
-        Similiar to...&nbsp;&nbsp;
-        <span className="synonym">{synonym}</span>
-      </h3>
+      <Clue synonym={synonym} isCorrect={isCorrect} />
       {guesses.map((guess: GuessT): ReactElement => (
         <Guess
           key={`Guess${guess.guessID}`}

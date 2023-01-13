@@ -1,0 +1,28 @@
+@import 'global.css';
+
+.synonym {
+  font-style: italic;
+  letter-spacing: 4px;
+}
+
+.synonymHeader {
+  letter-spacing: 1px;
+}
+
+.win {
+  color: darkblue;
+  transform: scale(1);
+  animation: win-pulse 1s infinite;
+}
+
+@keyframes win-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1.0);
+  }
+}
