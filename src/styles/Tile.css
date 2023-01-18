@@ -39,6 +39,40 @@
   }
 }
 
+.tileShake {
+  display: block;
+  margin: 10px;
+  padding: 10px;
+  background-color: whitesmoke;
+  border: 2px solid black;
+  box-shadow: 0px 0px 20px -10px black;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  animation: tile-shake .5s;
+}
+
+@keyframes tile-shake {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(20px);
+  }
+  40% {
+    transform: translateX(-40px);
+  }
+  60% {
+    transform: translateX(10px);
+  }
+  80% {
+    transform: translateX(-20px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+
 /* .App-logo {
   height: 40vmin;
   pointer-events: none;

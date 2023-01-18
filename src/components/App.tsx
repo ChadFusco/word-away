@@ -1,5 +1,6 @@
 import React, { useState, ReactElement } from 'react';
 import '../styles/App.css';
+import axios from 'axios';
 import Guess from './Guess';
 import Clue from './Clue';
 // import requests from '../requests';
@@ -14,6 +15,7 @@ export default function App(): JSX.Element {
     guessID: 0,
     guessWord: initialStrArr,
     guessed: false,
+    valid: true,
     correct: false,
     matched: initialNumArr,
   };
@@ -24,6 +26,7 @@ export default function App(): JSX.Element {
 
   // COMPONENT STATES
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
+  const [isValidWord, setIsValidWord] = useState<boolean>(true);
   const [guesses, setGuesses] = useState<GuessesT>(initialGuesses);
   const [curAnswerID, setCurAnswerID] = useState<number>(0);
   const [answer, setAnswer] = useState<string[]>(answers[0].answer.toUpperCase().split(''));
@@ -43,31 +46,51 @@ export default function App(): JSX.Element {
     setCurAnswerID(answerID + 1);
   };
 
-  const checkAnswer = async (submittedGuess: GuessT) => {
-    const newMatchedArr: number[] = submittedGuess.guessWord.map((char: string, i: number) => {
-      if (answer.indexOf(char) === -1) {
-        return 0;
-      }
-      return (char === answer[i] ? 2 : 1);
-    });
-
-    const isCorrectGuess: boolean = newMatchedArr.reduce((acc, num) => acc + num) === 12;
-    setIsCorrect(isCorrectGuess);
-
-    const newGuess = {
-      ...submittedGuess, guessed: true, correct: isCorrectGuess, matched: newMatchedArr,
-    };
-
+  const updateGuess = (guessID: number, newGuess: GuessT) => {
     setGuesses((prevGuesses: GuessesT) => prevGuesses.map((guessItem: GuessT) => (
-      guessItem.guessID === newGuess.guessID ? newGuess : guessItem
+      guessItem.guessID === guessID ? newGuess : guessItem
     )));
+  };
 
-    if (isCorrectGuess) {
-      await timeout(2500);
-      getNewAnswer(curAnswerID);
-      clearBoard();
-      setIsCorrect(false);
-    }
+  const checkAnswer = async (submittedGuess: GuessT) => {
+    // check if answer is a word:
+    const dictUrl = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
+    axios.get(`${dictUrl}${submittedGuess.guessWord.join('')}`)
+      .then(({ data }) => (data.word ? 'valid word' : new Error('guess is a not a word')))
+      .then(async () => {
+        const newMatchedArr: number[] = submittedGuess.guessWord.map((char: string, i: number) => {
+          if (answer.indexOf(char) === -1) {
+            return 0;
+          }
+          return (char === answer[i] ? 2 : 1);
+        });
+
+        const isCorrectGuess: boolean = newMatchedArr.reduce((acc, num) => acc + num) === 12;
+        setIsCorrect(isCorrectGuess);
+
+        const newGuess = {
+          ...submittedGuess, guessed: true, correct: isCorrectGuess, matched: newMatchedArr,
+        };
+
+        updateGuess(submittedGuess.guessID, newGuess);
+
+        if (isCorrectGuess) {
+          await timeout(3000);
+          getNewAnswer(curAnswerID);
+          clearBoard();
+          setIsCorrect(false);
+        }
+      })
+      .catch(async () => {
+        // clear out guess
+        const newGuess = { ...submittedGuess, valid: false };
+        updateGuess(submittedGuess.guessID, newGuess);
+        // notify user that it's not a word
+        setIsValidWord(false);
+        await timeout(2500);
+        updateGuess(submittedGuess.guessID, initialGuess);
+        setIsValidWord(true);
+      });
   };
 
   // const getNewAnswer = (answerID: number) => {
@@ -89,7 +112,7 @@ export default function App(): JSX.Element {
       <div className="app-header">
         <h2>A Word Away...</h2>
       </div>
-      <Clue synonym={synonym} isCorrect={isCorrect} />
+      <Clue synonym={synonym} isCorrect={isCorrect} isValidWord={isValidWord} />
       {guesses.map((guess: GuessT): ReactElement => (
         <Guess
           key={`Guess${guess.guessID}`}

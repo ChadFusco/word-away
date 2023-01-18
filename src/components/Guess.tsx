@@ -37,6 +37,7 @@ function Guess({ guess, setGuesses, checkAnswer }: Props): JSX.Element {
             updateGuess={updateGuess}
             match={guess.matched[i]}
             correct={guess.correct}
+            valid={guess.valid}
           />
         );
       })}

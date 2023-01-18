@@ -2,6 +2,7 @@ export type GuessT = {
   guessID: number,
   guessWord: string[],
   guessed: boolean,
+  valid: boolean,
   correct: boolean,
   matched: number[],
 };

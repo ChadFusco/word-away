@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
 import '../styles/Tile.css';
 import type { TileStyleT } from '../dataStructure';
@@ -7,11 +8,12 @@ type Props = {
   letter: string,
   updateGuess: Function,
   match: number,
-  correct: boolean
+  correct: boolean,
+  valid: boolean,
 };
 
 function Tile({
-  letterID, letter, updateGuess, match, correct,
+  letterID, letter, updateGuess, match, correct, valid,
 }: Props): JSX.Element {
   // COMPONENT STATES
   const [tileStyle, setTileStyle] = useState<TileStyleT>({ backgroundColor: 'white' });
@@ -38,7 +40,7 @@ function Tile({
   return (
     <h3>
       <input
-        className={correct ? 'tileSpin' : 'tile'}
+        className={correct ? 'tileSpin' : (valid ? 'tile' : 'tileShake')}
         type="text"
         size={1}
         maxLength={1}
