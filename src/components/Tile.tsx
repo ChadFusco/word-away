@@ -19,12 +19,10 @@ function Tile({
   const [tileStyle, setTileStyle] = useState<TileStyleT>({ backgroundColor: 'white' });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    // setLetter(e.target.value.toUpperCase());
     updateGuess(letterID, e.target.value.toUpperCase());
   }
 
   useEffect(() => {
-    // console.log('useEffect inside Tile fired! match:', match);
     const color: string = (() => {
       switch (match) {
         case 1: return 'yellow';
