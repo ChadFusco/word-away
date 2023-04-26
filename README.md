@@ -1,4 +1,6 @@
-# Getting Started with Create React App
+# A Word Away...
+
+Wordle - with synonyms! Try to the 6-letter word given its synonym. 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
